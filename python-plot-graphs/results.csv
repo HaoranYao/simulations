@@ -1,0 +1,41 @@
+experiment-type,servers,workload,buckets to server,connection target,end-time,sheme,Update Rate,imbalance (%),Unnecessary Movement,Total Connections,Unnecessary Movement Rate (%)
+DIP-updates,30,hadoop,null,20000,10000,consistent hashing,0.1,null,15813,9378096,0.168616316
+DIP-updates,30,hadoop,null,20000,10000,consistent hashing,0.2,null,26280,9378096,0.280227458
+DIP-updates,30,hadoop,null,20000,10000,consistent hashing,0.3,null,40515,9378096,0.432017331
+DIP-updates,30,hadoop,null,20000,10000,consistent hashing,0.4,null,50418,9378096,0.537614458
+DIP-updates,30,hadoop,null,20000,10000,consistent hashing,0.5,null,63957,9378096,0.681982782
+DIP-updates,30,hadoop,null,20000,10000,consistent hashing,0.6,null,77979,9378096,0.831501405
+DIP-updates,30,hadoop,null,20000,10000,faild,0.1,null,15,9378096,0.000159947
+DIP-updates,30,hadoop,null,20000,10000,faild,0.2,null,149,9378096,0.001588809
+DIP-updates,30,hadoop,null,20000,10000,faild,0.3,null,184,9378096,0.001962019
+DIP-updates,30,hadoop,null,20000,10000,faild,0.4,null,316,9378096,0.003369554
+DIP-updates,30,hadoop,null,20000,10000,faild,0.5,null,893,9378096,0.009522189
+DIP-updates,30,hadoop,null,20000,10000,faild,0.6,null,1698,9378096,0.018106021
+DIP-updates,30,hadoop,null,10000,10000,faild,2,null,10610,4692232,0.226118402
+DIP-updates,30,hadoop,null,10000,10000,faild,3,null,23766,4692232,0.506496695
+DIP-updates,30,hadoop,null,10000,10000,faild,4,null,49461,4692232,1.054103889
+DIP-updates,30,hadoop,null,10000,10000,faild,5,null,88707,4692232,1.890507545
+DIP-updates,30,hadoop,null,10000,10000,faild,6,null,144242,4692232,3.074059424
+DIP-updates,30,hadoop,null,10000,10000,faild,7,null,205157,4692232,4.37226889
+imbalance,30,hadoop,3000,3000,10000,beamer,null,12.9,8139,1407350,0.578320958
+imbalance,30,hadoop,3000,15000,10000,beamer,null,6.07,227752,7035073,3.237379342
+imbalance,30,hadoop,3000,30000,10000,beamer,null,5.92,847920,14065373,6.028421713
+imbalance,30,hadoop,3000,60000,10000,beamer,null,6.12,2620385,28127299,9.316162921
+imbalance,30,hadoop,3000,210000,10000,beamer,null,11.23,18738852,98448033,19.03425739
+imbalance,30,hadoop,3000,300000,10000,beamer,null,null,30876167,140634530,21.95489756
+imbalance,468,hadoop,46800,70000,converge time,beamer/cheetah,null,10,536316,14180000,3.7822003
+imbalance,468,hadoop,46800,70000,converge time,beamer/cheetah,null,15,412576,13000000,3.1736615
+imbalance,468,hadoop,46800,70000,converge time,beamer/cheetah,null,20,431076,21830000,1.9746954
+imbalance,468,hadoop,46800,70000,converge time,beamer/cheetah,null,25,120383,13000000,0.9260231
+imbalance,468,hadoop,46800,70000,converge time,beamer/cheetah,null,30,243057,57970000,0.4192807
+imbalance,468,hadoop,46800,70000,converge time,beamer/cheetah,null,35,24200,12320000,0.1964286
+imbalance,468,hadoop,46800,70000,converge time,beamer/cheetah,null,40,13436,16380000,0.0820269
+imbalance,468,hadoop,46800,70000,converge time,beamer/cheetah,null,35,24200,12320000,0.1964286
+imbalance,468,hadoop,null,10000,30000,Round-robin,null,66.060655282,null,null,null
+imbalance,468,hadoop,null,20000,30000,Round-robin,null,45.727391897,null,null,null
+imbalance,468,hadoop,null,30000,30000,Round-robin,null,36.405694358,null,null,null
+imbalance,468,hadoop,null,40000,30000,Round-robin,null,31.334207942,null,null,null
+imbalance,468,hadoop,null,50000,30000,Round-robin,null,27.917916064,null,null,null
+imbalance,468,hadoop,null,60000,30000,Round-robin,null,25.306895611,null,null,null
+imbalance,468,hadoop,null,70000,30000,Round-robin,null,23.310905808,null,null,null
+imbalance,468,hadoop,null,80000,30000,Round-robin,null,21.696793328,null,null,null
