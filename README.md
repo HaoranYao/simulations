@@ -25,9 +25,9 @@ The status of each server will be collected by the collector in ```cheetah-exper
 
 ### How to use
 
-Enter the <cheetah-experiments/algorithm_simulation/> folder:
+Enter the <algorithm_simulation/> folder:
 ```sh
-$ cd cheetah-experiments/algorithm_simulation/ 
+$ cd algorithm_simulation/ 
 ```
 The main function for this simulation is <compare.py> python file in <./simulation>.
 You can see the help information with "-h" command:
@@ -85,12 +85,23 @@ You can use:
 ```$ python simulation/compare.py  -M dy_beamer -e 30000 -t 70000 -th 1.5```
 
 ### Results
-The result is contained in <cheetah-experiments/algorithm_simulation/stats/report.csv>.
+The result is contained in ```cheetah-experiments/algorithm_simulation/stats/report.csv```.
 All of the results are written in this csv file. The format is:
 
 model,connection_target,end_time,server_number,update_rate,bucket_number,imbalance_threshold,total_connections,broken_connections,broken_rate,max_imbalance,ave_imbalance
 
 The non-existent value will be represented as ```None```.
+
+### Ploting
+Results of our previous simulations can be found at ```cheetah-experiments/algorithm_simulation/stats/report.csv```. 
+
+To generate the graphs:
+- ```$ cd algorithm_simulation/stats```
+- ```$ python 01-plot-dip.py``` to plot the graph of connections broken rate in DIP Updates experiment.
+- ```$ python 02-plot-imbalance.py``` to plot the graph of average imbalance in Imbalance experiment.
+- ```$ python 03-plot-moving-buckets.py``` to plot the graph of moving buckets rate in dynamic beamer experiment.
+- ```$ python 04-plot-broken-connections.py``` to plot the graph of connections broken rate in dynamic beamer experiment.
+
 
 ### Acknowledgement
 This python simulation is built from the prototype provided by Marco.

@@ -24,7 +24,7 @@ class StatisticsCollector(Collector):
         with open("./stats/report.csv",'ab+') as f:
             aa = csv.writer(f)
             aa.writerow([str(self.model), str(self.connection_target), str(self.endtime), str(self.server_number), "None",
-                         str(self.bucket_number),"None", str(self.total_con), "None", "None", str(self.max_imba * 100), str(self.ave_imba * 100), "None"])
+                         str(self.bucket_number),"None", "None", "None", "None", "None", str(self.ave_imba * 100), "None"])
             f.close()
 
 class DynamicBeamerCollecter(Collector):
@@ -61,5 +61,5 @@ class DipCollector(Collector):
             with open("./stats/report.csv",'ab+') as f:
                 aa = csv.writer(f)
                 aa.writerow([str(self.model), str(self.connection_target), str(self.endtime), str(self.server_number),
-                             str(self.rate_number),"None", "None", str(self.total_con),str(self.unnecessary_move_count),str((float(self.unnecessary_move_count)/self.total_con)*100), "None", "None"])
+                             str(self.rate_number),"None", "None", str(self.total_con),str(self.unnecessary_move_count),str((float(self.unnecessary_move_count)/self.total_con)*100), "None", "None", "None"])
                 f.close()

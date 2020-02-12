@@ -48,7 +48,7 @@ from matplotlib.ticker import FuncFormatter
 paper_mode = True
 subset_mode = False
 
-outname = "03-plot-moving-buckets"
+outname = "02-plot-imbalance"
 fnames = []
 
 for i in range(0, len(sys.argv) - 1, 1):
@@ -69,30 +69,33 @@ cheetah = []
 beamer = []
 round_robin = []
 consistent_hashing = []
+two_hashes = []
 
 ct = []
 bm = []
 rr = []
 ch = []
+th = []
 
 ctmap = {}
 bmmap = {}
 rrmap = {}
 chmap = {}
+thmap = {}
 
 fname = "report.csv"
 
 filenames = []
 filenames.append(fname)
 
-dict_list = {"beamer" : bmmap, "round-robin" : rrmap, "least-loaded": ctmap, "consistent-hashing": chmap }
+dict_list = {"beamer" : bmmap, "round-robin" : rrmap, "least-loaded": ctmap, "power-of-two" : thmap}
 
 for f in filenames:
     print "Analyzing file %s: " % (f)
     for line in open(f).readlines()[1:]:
         fields = [x.strip() for x in line.split(",")]
         model = fields[0]  #
-        connection_target = fields[1]  #
+        connection_target = int(fields[1])  #
         end_time = fields[2]  #
         server_number = fields[3]  #
         update_rate = fields[4]  #
@@ -104,17 +107,30 @@ for f in filenames:
         max_imbalance = fields[10]  #
         ave_imbalance = fields[11]  #
         moving_bucket_rate = fields[12]
-        if model != "dy_beamer":
-            print (model)
+        # print (model)
+        if model != "load_imba_least" and model != "load_imba_power2" and model != "load_imba_hash" and model != "load_imba_round":
             continue
         if server_number != "468":
             continue
-        # print(str(connection_target) + " " + str(imbalance) + " " + str(scheme))
+        if int(connection_target) % 20000 != 0:
+            continue
         #connections_per_bucket = int(float(connection_target)/float(servers)/float(buckets_to_server))
-        if model == "dy_beamer":
-            #print("  " +str(connection_target) + " " + str(imbalance))
-            bmmap.setdefault(float(imbalance_threshold), [])
-            bmmap[float(imbalance_threshold)].append(float(moving_bucket_rate))
+        if model == "load_imba_hash":
+            print("  " +str(connection_target) + " " + str(ave_imbalance))
+            bmmap.setdefault(connection_target, [])
+            bmmap[connection_target].append(ave_imbalance)
+        elif model == "load_imba_least":
+            print("  " + str(connection_target) + " " + str(ave_imbalance))
+            ctmap.setdefault(connection_target, [])
+            ctmap[connection_target].append(ave_imbalance)
+        elif model == "load_imba_round":
+            print("  " + str(connection_target) + " " + str(ave_imbalance))
+            rrmap.setdefault(connection_target, [])
+            rrmap[connection_target].append(ave_imbalance)
+        elif model == "load_imba_power2":
+            print("  " + str(connection_target) + " " + str(ave_imbalance))
+            thmap.setdefault(connection_target, [])
+            thmap[connection_target].append(ave_imbalance)
 
 for item in dict_list:
   dict_ = dict_list[item]
@@ -125,29 +141,38 @@ for item in dict_list:
     if item == "beamer":
       beamer.append(row)
       bm.append(key)
+    elif (item == "least-loaded"):
+      cheetah.append(row)
+      ct.append(key)
+    elif (item == "round-robin"):
+      round_robin.append(row)
+      rr.append(key)
+    elif (item == "power-of-two"):
+      two_hashes.append(row)
+      th.append(key)
 
-plt.xlabel("Imbalance threshold [\%]",  fontsize=10)
-plt.ylabel("Moving buckets per minute [\%]", y=0.32)
+
+plt.xlabel("Number of connections",  fontsize=10)
+plt.ylabel("Imbalance [\%]")
 plt.yscale('log')
 #plt.title('sizeofsequence=16')
 #plt.ylim(0,2000)
-# plt.xlim(8,42)
-miny=10
+plt.xlim(10000,210000)
+miny=0.1
 plt.ylim(miny, 1000)
-#plt.yticks(range(0, 5, 1), [str(x) for x in range(0, 5, 1)])
 #plt.yticks(range(miny, 1101, 200), [str(x) for x in range(miny, 1101, 200)])
 
-#plt.annotate("45x", (125000, 1.8))
-#plt.annotate("", (120000,0.45), xytext=(120000,16), arrowprops=dict(arrowstyle='<->'))
-#plt.plot(ct, cheetah, label="ideal",color='green', lw=1.0, linestyle='-',marker= 'v', mfc='none', mec='green', ms=3)
-print (bm)
-print (beamer)
-# plt.plot(bm, beamer)
-plt.plot(bm, beamer, label="extended-beamer",color='red', lw=1.0, linestyle='-',marker= '>', mfc='none', mec='red', ms=3)
-#plt.plot(rr, round_robin, label="round-robin",color='blue', lw=1.0, linestyle='-',marker= 's', mfc='none', mec='blue', ms=3)
-#plt.plot(ch, consistent_hashing, label="consistent-hash",color='orange', lw=1.0, linestyle='-',marker= 'x', mfc='none', mec='orange', ms=3)
+plt.annotate("10x", (122000, 3.65), fontsize='8' )
+plt.annotate("", (120000,1.65), xytext=(120000,17), arrowprops=dict(arrowstyle='<->, head_length=0.15, head_width=0.15',lw=0.7))
+plt.annotate("4x", (123000, 0.56), fontsize='8')
+plt.annotate("", (120000,0.41), xytext=(120000,1.74), arrowprops=dict(arrowstyle='<->, head_length=0.15, head_width=0.15',lw=0.7))
+plt.plot(rr, round_robin, label="round-robin",color='orange', lw=1.0, linestyle='-',marker= 's', mfc='none', mec='orange', ms=3)
+plt.plot(bm, beamer, label="hash/beamer",color='red', lw=1.0, linestyle='-',marker= '>', mfc='none', mec='red', ms=3)
+#plt.plot(ch, consistent_hashing, label="consistent-hash",color='blue', lw=1.0, linestyle='-',marker= 'x', mfc='none', mec='blue', ms=3)
+plt.plot(th, two_hashes, label="power-of-two",color='blue', lw=1.0, linestyle='-',marker= 'o', mfc='none', mec='blue', ms=3)
+plt.plot(ct, cheetah, label="least-loaded",color='green', lw=1.0, linestyle='-',marker= 'v', mfc='none', mec='green', ms=3)
 
 
-plt.legend(loc='upper right', frameon=False, ncol=2, columnspacing=0.2, handletextpad=0.2)
+plt.legend(loc='upper right', frameon=False, ncol=2, columnspacing=0.6, handletextpad=0.2)
 plt.savefig("%s.pdf" % outname, format="pdf", bbox_inches='tight', pad_inches=0.05)
 

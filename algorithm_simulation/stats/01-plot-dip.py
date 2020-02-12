@@ -35,6 +35,7 @@ https://github.com/camsas/qjump-nsdi15-plotting/blob/master/figure1b_3b/plot_mem
 
 import os, sys, re
 import matplotlib
+
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
@@ -42,25 +43,25 @@ from matplotlib import pylab
 from utils import *
 from matplotlib.ticker import FuncFormatter
 
-#x-axis: number-of sequences (fix size_of_sequences to 16)
-#y-axis: average(scs-length) over the 6 seeds
+# x-axis: number-of sequences (fix size_of_sequences to 16)
+# y-axis: average(scs-length) over the 6 seeds
 
 paper_mode = True
 subset_mode = False
 
-outname = "03-plot-moving-buckets"
+outname = "01-plot-dip-updates"
 fnames = []
 
 for i in range(0, len(sys.argv) - 1, 1):
-  #mode = sys.argv[2 + i]
-  fnames.append(sys.argv[1 + i])
+    # mode = sys.argv[2 + i]
+    fnames.append(sys.argv[1 + i])
 
 if paper_mode:
-  fig = plt.figure(figsize=(3.33,1.2))
-  set_paper_rcs()
+    fig = plt.figure(figsize=(3.33, 1.2))
+    set_paper_rcs()
 else:
-  fig = plt.figure()
-  set_rcs()
+    fig = plt.figure()
+    set_rcs()
 
 colours = ['b', 'g', 'r', 'c', 'm', 'y', 'v']
 markers = ['+', 'x', 'v', 's', 'd', 'o', '1']
@@ -85,7 +86,7 @@ fname = "report.csv"
 filenames = []
 filenames.append(fname)
 
-dict_list = {"beamer" : bmmap, "round-robin" : rrmap, "least-loaded": ctmap, "consistent-hashing": chmap }
+dict_list = {"beamer": bmmap, "round-robin": rrmap, "least-loaded": ctmap, "consistent-hashing": chmap}
 
 for f in filenames:
     print "Analyzing file %s: " % (f)
@@ -104,50 +105,52 @@ for f in filenames:
         max_imbalance = fields[10]  #
         ave_imbalance = fields[11]  #
         moving_bucket_rate = fields[12]
-        if model != "dy_beamer":
-            print (model)
+        if model != "dip" and model != "dip_chain":
             continue
-        if server_number != "468":
-            continue
-        # print(str(connection_target) + " " + str(imbalance) + " " + str(scheme))
-        #connections_per_bucket = int(float(connection_target)/float(servers)/float(buckets_to_server))
-        if model == "dy_beamer":
-            #print("  " +str(connection_target) + " " + str(imbalance))
-            bmmap.setdefault(float(imbalance_threshold), [])
-            bmmap[float(imbalance_threshold)].append(float(moving_bucket_rate))
+        if model == "dip":
+            bmmap.setdefault(float(update_rate), [])
+            bmmap[float(update_rate)].append(broken_rate)
+        elif model == "dip_chain":
+            chmap.setdefault(float(update_rate), [])
+            chmap[float(update_rate)].append(broken_rate)
 
 for item in dict_list:
-  dict_ = dict_list[item]
-  print str(item) + " " + str(dict_)
-  for key in sorted(dict_.keys()):
-    dict_float = [float(x) for x in dict_[key]]
-    row = np.average(dict_float)
-    if item == "beamer":
-      beamer.append(row)
-      bm.append(key)
+    dict_ = dict_list[item]
+    print str(item) + " " + str(dict_) + " " + str(sorted(dict_.keys()))
+    for key in sorted(dict_.keys()):
+        dict_float = [float(x) for x in dict_[key]]
+        row = np.average(dict_float)
+        if item == "beamer":
+            beamer.append(row)
+            bm.append(key)
+        elif (item == "consistent-hashing"):
+            consistent_hashing.append(row)
+            ch.append(key)
 
-plt.xlabel("Imbalance threshold [\%]",  fontsize=10)
-plt.ylabel("Moving buckets per minute [\%]", y=0.32)
+plt.xlabel("DIP updates per minute", fontsize=10)
+plt.ylabel("Broken connections [\%]", y=0.32)
+plt.xscale('log')
 plt.yscale('log')
-#plt.title('sizeofsequence=16')
-#plt.ylim(0,2000)
-# plt.xlim(8,42)
-miny=10
-plt.ylim(miny, 1000)
-#plt.yticks(range(0, 5, 1), [str(x) for x in range(0, 5, 1)])
-#plt.yticks(range(miny, 1101, 200), [str(x) for x in range(miny, 1101, 200)])
+# plt.title('sizeofsequence=16')
+# plt.ylim(0,2000)
+plt.xlim(1, 100)
+miny = 0.0001
+plt.ylim(miny, 10)
+# plt.yticks(range(miny, 1101, 200), [str(x) for x in range(miny, 1101, 200)])
 
-#plt.annotate("45x", (125000, 1.8))
-#plt.annotate("", (120000,0.45), xytext=(120000,16), arrowprops=dict(arrowstyle='<->'))
-#plt.plot(ct, cheetah, label="ideal",color='green', lw=1.0, linestyle='-',marker= 'v', mfc='none', mec='green', ms=3)
-print (bm)
-print (beamer)
-# plt.plot(bm, beamer)
-plt.plot(bm, beamer, label="extended-beamer",color='red', lw=1.0, linestyle='-',marker= '>', mfc='none', mec='red', ms=3)
-#plt.plot(rr, round_robin, label="round-robin",color='blue', lw=1.0, linestyle='-',marker= 's', mfc='none', mec='blue', ms=3)
-#plt.plot(ch, consistent_hashing, label="consistent-hash",color='orange', lw=1.0, linestyle='-',marker= 'x', mfc='none', mec='orange', ms=3)
+print str(bm)
+print str(beamer)
 
+# plt.annotate("45x", (125000, 1.8))
+# plt.annotate("", (120000,0.45), xytext=(120000,16), arrowprops=dict(arrowstyle='<->'))
+##plt.plot(ct, cheetah, label="ideal",color='green', lw=1.0, linestyle='-',marker= 'v', mfc='none', mec='green', ms=3)
+# plt.plot(bm, beamer, label="beamer",color='red', lw=1.0, linestyle='-',marker= '>', mfc='none', mec='red', ms=3)
+plt.plot(bm, beamer, label="with daisy-chaising", color='red', lw=1.0, linestyle='-', marker='>', mfc='none', mec='red',
+         ms=3)
+##plt.plot(rr, round_robin, label="round-robin",color='orange', lw=1.0, linestyle='-',marker= 's', mfc='none', mec='blue', ms=3)
+# plt.plot(ch, consistent_hashing, label="consistent-hash",color='blue', lw=1.0, linestyle='-',marker= 'x', mfc='none', mec='blue', ms=3)
+plt.plot(ch, consistent_hashing, label="without daisy-chaining", color='blue', lw=1.0, linestyle='-', marker='x',
+         mfc='none', mec='blue', ms=3)
 
-plt.legend(loc='upper right', frameon=False, ncol=2, columnspacing=0.2, handletextpad=0.2)
+plt.legend(loc='lower right', frameon=False, ncol=1, columnspacing=0.2, handletextpad=0.2)
 plt.savefig("%s.pdf" % outname, format="pdf", bbox_inches='tight', pad_inches=0.05)
-

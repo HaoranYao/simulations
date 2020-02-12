@@ -48,7 +48,7 @@ from matplotlib.ticker import FuncFormatter
 paper_mode = True
 subset_mode = False
 
-outname = "03-plot-moving-buckets"
+outname = "04-plot-broken-connections"
 fnames = []
 
 for i in range(0, len(sys.argv) - 1, 1):
@@ -114,7 +114,7 @@ for f in filenames:
         if model == "dy_beamer":
             #print("  " +str(connection_target) + " " + str(imbalance))
             bmmap.setdefault(float(imbalance_threshold), [])
-            bmmap[float(imbalance_threshold)].append(float(moving_bucket_rate))
+            bmmap[float(imbalance_threshold)].append(float(broken_rate))
 
 for item in dict_list:
   dict_ = dict_list[item]
@@ -127,22 +127,20 @@ for item in dict_list:
       bm.append(key)
 
 plt.xlabel("Imbalance threshold [\%]",  fontsize=10)
-plt.ylabel("Moving buckets per minute [\%]", y=0.32)
+plt.ylabel("Broken connections [\%]", y=0.32)
 plt.yscale('log')
 #plt.title('sizeofsequence=16')
 #plt.ylim(0,2000)
-# plt.xlim(8,42)
-miny=10
-plt.ylim(miny, 1000)
+plt.xlim(8,42)
+plt.xticks(range(10,42,5))
+miny=0.01
+plt.ylim(miny, 10)
 #plt.yticks(range(0, 5, 1), [str(x) for x in range(0, 5, 1)])
 #plt.yticks(range(miny, 1101, 200), [str(x) for x in range(miny, 1101, 200)])
 
 #plt.annotate("45x", (125000, 1.8))
 #plt.annotate("", (120000,0.45), xytext=(120000,16), arrowprops=dict(arrowstyle='<->'))
 #plt.plot(ct, cheetah, label="ideal",color='green', lw=1.0, linestyle='-',marker= 'v', mfc='none', mec='green', ms=3)
-print (bm)
-print (beamer)
-# plt.plot(bm, beamer)
 plt.plot(bm, beamer, label="extended-beamer",color='red', lw=1.0, linestyle='-',marker= '>', mfc='none', mec='red', ms=3)
 #plt.plot(rr, round_robin, label="round-robin",color='blue', lw=1.0, linestyle='-',marker= 's', mfc='none', mec='blue', ms=3)
 #plt.plot(ch, consistent_hashing, label="consistent-hash",color='orange', lw=1.0, linestyle='-',marker= 'x', mfc='none', mec='orange', ms=3)
